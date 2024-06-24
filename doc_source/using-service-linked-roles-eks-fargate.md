@@ -10,13 +10,13 @@ For information about other services that support service\-linked roles, see [AW
 
 ## Service\-linked role permissions for Amazon EKS<a name="service-linked-role-permissions-eks-fargate"></a>
 
-Amazon EKS uses the service\-linked role named `AWSServiceRoleForAmazonEKSForFargate` – The role allows Amazon EKS Fargate to configure VPC networking required for Fargate Pods\. The attached policies allow the role to create and delete Elastic Network Interfaces and describe Elastic Network Interfaces and resources\.
+Amazon EKS uses the service\-linked role named `AWSServiceRoleForAmazonEKSForFargate` – The role allows Amazon EKS Fargate to configure VPC networking required for Fargate Pods\. The attached policies allow the role to create and delete elastic network interfaces and describe elastic network Interfaces and resources\.
 
 The `AWSServiceRoleForAmazonEKSForFargate` service\-linked role trusts the following services to assume the role:
 + `eks-fargate.amazonaws.com`
 
 The role permissions policy allows Amazon EKS to complete the following actions on the specified resources:
-+ [https://console.aws.amazon.com/iam/home#/policies/arn:aws:iam::aws:policy/aws-service-role/AmazonEKSForFargateServiceRolePolicy$jsonEditor](https://console.aws.amazon.com/iam/home#/policies/arn:aws:iam::aws:policy/aws-service-role/AmazonEKSForFargateServiceRolePolicy$jsonEditor)
++ [https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonEKSForFargateServiceRolePolicy.html](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonEKSForFargateServiceRolePolicy.html)
 
 You must configure permissions to allow an IAM entity \(such as a user, group, or role\) to create, edit, or delete a service\-linked role\. For more information, see [Service\-linked role permissions](https://docs.aws.amazon.com/IAM/latest/UserGuide/using-service-linked-roles.html#service-linked-role-permissions) in the *IAM User Guide*\.
 
@@ -25,7 +25,7 @@ You must configure permissions to allow an IAM entity \(such as a user, group, o
 You don't need to manually create a service\-linked role\. When you create a Fargate profile in the AWS Management Console, the AWS CLI, or the AWS API, Amazon EKS creates the service\-linked role for you\. 
 
 **Important**  
-  This service\-linked role can appear in your account if you completed an action in another service that uses the features supported by this role\.  If you were using the Amazon EKS service before December 13, 2019, when it began supporting service\-linked roles, then Amazon EKS created the AWSServiceRoleForAmazonEKSForFargate role in your account\.  To learn more, see [A New Role Appeared in My IAM Account](https://docs.aws.amazon.com/IAM/latest/UserGuide/troubleshoot_roles.html#troubleshoot_roles_new-role-appeared)\.
+  This service\-linked role can appear in your account if you completed an action in another service that uses the features supported by this role\.  If you were using the Amazon EKS service before December 13, 2019, when it began supporting service\-linked roles, then Amazon EKS created the AWSServiceRoleForAmazonEKSForFargate role in your account\.  To learn more, see [A New role appeared in my IAM account](https://docs.aws.amazon.com/IAM/latest/UserGuide/troubleshoot_roles.html#troubleshoot_roles_new-role-appeared)\.
 
 ### Creating a service\-linked role in Amazon EKS \(AWS API\)<a name="create-service-linked-role-service-api-eks-fargate"></a>
 
@@ -52,13 +52,13 @@ If the Amazon EKS service is using the role when you try to delete the resources
 
 1. Open the Amazon EKS console at [https://console\.aws\.amazon\.com/eks/home\#/clusters](https://console.aws.amazon.com/eks/home#/clusters)\.
 
-1. In the left navigation pane, select **Clusters**\.
+1. In the left navigation pane, choose **Clusters**\.
 
 1. On the **Clusters** page, select your cluster\.
 
-1. Select the **Configuration** tab and then select the **Compute** tab\.
+1. Select the **Compute** tab\.
 
-1. If there are any Fargate profiles in the **Fargate Profiles** section, select each one individually, and then choose **Delete**\.
+1. If there are any Fargate profiles in the **Fargate profiles** section, select each one individually, and then choose **Delete**\.
 
 1. Type the name of the profile in the deletion confirmation window, and then choose **Delete**\.
 
@@ -70,4 +70,4 @@ Use the IAM console, the AWS CLI, or the AWS API to delete the AWSServiceRoleFor
 
 ## Supported regions for Amazon EKS service\-linked roles<a name="slr-regions-eks-fargate"></a>
 
-Amazon EKS supports using service\-linked roles in all of the regions where the service is available\. For more information, see [Amazon EKS Service Endpoints and Quotas](https://docs.aws.amazon.com/general/latest/gr/eks.html)\.
+Amazon EKS supports using service\-linked roles in all of the regions where the service is available\. For more information, see [Amazon EKS endpoints and quotas](https://docs.aws.amazon.com/general/latest/gr/eks.html)\.

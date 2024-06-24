@@ -10,13 +10,13 @@ For information about other services that support service\-linked roles, see [AW
 
 ## Service\-linked role permissions for Amazon EKS<a name="service-linked-role-permissions-eks-connector"></a>
 
-Amazon EKS uses the service\-linked role named `AWSServiceRoleForAmazonEKSConnector` – The role allows Amazon EKS to connect Kubernetes clusters\. The attached policies allow the role to to manage necessary resources to connect to your registered Kubernetes cluster\.
+Amazon EKS uses the service\-linked role named `AWSServiceRoleForAmazonEKSConnector` – The role allows Amazon EKS to connect Kubernetes clusters\. The attached policies allow the role to manage necessary resources to connect to your registered Kubernetes cluster\.
 
 The `AWSServiceRoleForAmazonEKSConnector` service\-linked role trusts the following services to assume the role:
 + `eks-connector.amazonaws.com`
 
 The role permissions policy allows Amazon EKS to complete the following actions on the specified resources:
-+ [https://console.aws.amazon.com/iam/home#/policies/arn:aws:iam::aws:policy/aws-service-role/AmazonEKSConnectorServiceRolePolicy$jsonEditor](https://console.aws.amazon.com/iam/home#/policies/arn:aws:iam::aws:policy/aws-service-role/AmazonEKSConnectorServiceRolePolicy$jsonEditor)
++ [https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonEKSConnectorServiceRolePolicy.html](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonEKSConnectorServiceRolePolicy.html)
 
 You must configure permissions to allow an IAM entity \(such as a user, group, or role\) to create, edit, or delete a service\-linked role\. For more information, see [Service\-linked role permissions](https://docs.aws.amazon.com/IAM/latest/UserGuide/using-service-linked-roles.html#service-linked-role-permissions) in the *IAM User Guide*\.
 
@@ -45,7 +45,7 @@ If the Amazon EKS service is using the role when you try to delete the resources
 
 1. Open the Amazon EKS console at [https://console\.aws\.amazon\.com/eks/home\#/clusters](https://console.aws.amazon.com/eks/home#/clusters)\.
 
-1. In the left navigation pane, select **Clusters**\.
+1. In the left navigation pane, choose **Clusters**\.
 
 1. On the **Clusters** page, select your cluster\.
 
@@ -54,7 +54,3 @@ If the Amazon EKS service is using the role when you try to delete the resources
 ### Manually delete the service\-linked role<a name="slr-manual-delete-eks-connector"></a>
 
 Use the IAM console, the AWS CLI, or the AWS API to delete the AWSServiceRoleForAmazonEKSConnector service\-linked role\. For more information, see [Deleting a service\-linked role](https://docs.aws.amazon.com/IAM/latest/UserGuide/using-service-linked-roles.html#delete-service-linked-role) in the *IAM User Guide*\.
-
-## Supported regions for Amazon EKS service\-linked roles<a name="slr-regions-eks-connector"></a>
-
-Amazon EKS supports using service\-linked roles in all of the regions where the service is available\. For more information, see [Amazon EKS Service Endpoints and Quotas](https://docs.aws.amazon.com/general/latest/gr/eks.html)\.

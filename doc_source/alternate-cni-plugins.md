@@ -1,15 +1,18 @@
 # Alternate compatible CNI plugins<a name="alternate-cni-plugins"></a>
 
-Amazon EKS only officially supports the [Amazon VPC CNI plugin](pod-networking.md)\. Amazon EKS runs upstream Kubernetes and is certified Kubernetes conformant however, so alternate CNI plugins will work with Amazon EKS clusters\. If you plan to use an alternate CNI plugin in production, then we strongly recommend that you either obtain commercial support, or have the in\-house expertise to troubleshoot and contribute fixes to the open source CNI plugin project\.
+The [https://github.com/aws/amazon-vpc-cni-plugins](https://github.com/aws/amazon-vpc-cni-plugins) is the only CNI plugin supported by Amazon EKS\. Amazon EKS runs upstream Kubernetes, so you can install alternate compatible CNI plugins to Amazon EC2 nodes in your cluster\. If you have Fargate nodes in your cluster, the Amazon VPC CNI plugin for Kubernetes is already on your Fargate nodes\. It's the only CNI plugin you can use with Fargate nodes\. An attempt to install an alternate CNI plugin on Fargate nodes fails\.
 
-Amazon EKS maintains relationships with a network of partners that offer support for alternate compatible CNI plugins\. See the following partners' documentation for details on supported Kubernetes versions and qualifications and testing performed\.
+If you plan to use an alternate CNI plugin on Amazon EC2 nodes, we recommend that you obtain commercial support for the plugin or have the in\-house expertise to troubleshoot and contribute fixes to the CNI plugin project\. 
+
+Amazon EKS maintains relationships with a network of partners that offer support for alternate compatible CNI plugins\. For details about the versions, qualifications, and testing performed, see the following partner documentation\.
 
 
 | Partner | Product | Documentation | 
 | --- | --- | --- | 
-| Tigera | [ Calico](https://www.tigera.io/partners/aws/) | [Installation instructions](https://docs.projectcalico.org/getting-started/kubernetes/managed-public-cloud/eks) | 
-| Isovalent | [Cilium](https://cilium.io/contact-us-eks/) | [Installation instructions](https://docs.cilium.io/en/v1.9/gettingstarted/k8s-install-eks/) | 
+| Tigera | [Calico](https://www.tigera.io/partners/aws/) | [Installation instructions](https://docs.projectcalico.org/getting-started/kubernetes/managed-public-cloud/eks) | 
+| Isovalent | [Cilium](https://cilium.io) | [Installation instructions](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/) | 
+| Juniper | [Cloud\-Native Contrail Networking \(CN2\)](https://www.juniper.net/us/en/products/sdn-and-orchestration/contrail/cloud-native-contrail-networking.html) | [Installation instructions](https://www.juniper.net/documentation/us/en/software/cn-cloud-native23.2/cn-cloud-native-eks-install-and-lcm/index.html) | 
 | Weaveworks | [Weave Net](https://www.weave.works/contact/) | [Installation instructions](https://www.weave.works/docs/net/latest/kubernetes/kube-addon/#-installing-on-eks) | 
 | VMware | [Antrea](https://antrea.io/) | [Installation instructions](https://antrea.io/docs/main/docs/eks-installation) | 
 
-Amazon EKS aims to give you a wide selection of options to cover all use cases\. If you develop a commercially supported Kubernetes CNI plugin that is not listed here, then please contact our partner team at [aws\-container\-partners@amazon\.com](mailto:aws-container-partners@amazon.com) for more information\.
+Amazon EKS aims to give you a wide selection of options to cover all use cases\. If you develop a commercially supported Kubernetes CNI plugin not listed here, contact our partner team at [aws\-container\-partners@amazon\.com](mailto:aws-container-partners@amazon.com) for more information\.

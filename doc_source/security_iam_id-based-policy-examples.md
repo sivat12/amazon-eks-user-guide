@@ -4,37 +4,38 @@ By default, IAM users and roles don't have permission to create or modify Amazon
 
 To learn how to create an IAM identity\-based policy using these example JSON policy documents, see [Creating policies on the JSON tab](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_create.html#access_policies_create-json-editor) in the *IAM User Guide*\.
 
-When you create an Amazon EKS cluster, the AWS Identity and Access Management \(IAM\) entity user or role, such as a [federated user](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers.html) that creates the cluster, is automatically granted `system:masters` permissions in the cluster's role\-based access control \(RBAC\) configuration in the Amazon EKS control plane\. This IAM entity doesn't appear in any visible configuration, so make sure to keep track of which IAM entity originally created the cluster\. To grant additional AWS users or roles the ability to interact with your cluster, you must edit the `aws-auth` `ConfigMap` within Kubernetes and create a Kubernetes `rolebinding` or `clusterrolebinding` with the name of a `group` that you specify in the `aws-auth` `ConfigMap`\.
+When you create an Amazon EKS cluster, the [IAM principal](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_terms-and-concepts.html) that creates the cluster is automatically granted `system:masters` permissions in the cluster's role\-based access control \(RBAC\) configuration in the Amazon EKS control plane\. This principal doesn't appear in any visible configuration, so make sure to keep track of which principal originally created the cluster\. To grant additional IAM principals the ability to interact with your cluster, edit the `aws-auth` `ConfigMap` within Kubernetes and create a Kubernetes `rolebinding` or `clusterrolebinding` with the name of a `group` that you specify in the `aws-auth` `ConfigMap`\.
 
-For additional information about working with the ConfigMap, see [Enabling IAM user and role access to your cluster](add-user-role.md)\.
+For more information about working with the ConfigMap, see [Enabling IAM principal access to your cluster](add-user-role.md)\.
 
 **Topics**
 + [Policy best practices](#security_iam_service-with-iam-policy-best-practices)
 + [Using the Amazon EKS console](#security_iam_id-based-policy-examples-console)
-+ [View nodes and workloads for all clusters in the AWS Management Console](#policy_example3)
-+ [Allow users to view their own permissions](#security_iam_id-based-policy-examples-view-own-permissions)
++ [Allow IAM users to view their own permissions](#security_iam_id-based-policy-examples-view-own-permissions)
++ [Create a Kubernetes cluster on the AWS Cloud](#policy-create-cluster)
++ [Create a local Kubernetes cluster on an Outpost](#policy-create-local-cluster)
 + [Update a Kubernetes cluster](#policy_example1)
 + [List or describe all clusters](#policy_example2)
 
 ## Policy best practices<a name="security_iam_service-with-iam-policy-best-practices"></a>
 
-Identity\-based policies are very powerful\. They determine whether someone can create, access, or delete Amazon EKS resources in your account\. These actions can incur costs for your AWS account\. When you create or edit identity\-based policies, follow these guidelines and recommendations:
-+ **Get started using AWS managed policies** – To start using Amazon EKS quickly, use AWS managed policies to give your employees the permissions they need\. These policies are already available in your account and are maintained and updated by AWS\. For more information, see [Get started using permissions with AWS managed policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#bp-use-aws-defined-policies) in the *IAM User Guide*\.
-+ **Grant least privilege** – When you create custom policies, grant only the permissions required to perform a task\. Start with a minimum set of permissions and grant additional permissions as necessary\. Doing so is more secure than starting with permissions that are too lenient and then trying to tighten them later\. For more information, see [Grant least privilege](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege) in the *IAM User Guide*\.
-+ **Enable MFA for sensitive operations** – For extra security, require IAM users to use multi\-factor authentication \(MFA\) to access sensitive resources or API operations\. For more information, see [Using multi\-factor authentication \(MFA\) in AWS](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html) in the *IAM User Guide*\.
-+ **Use policy conditions for extra security** – To the extent that it's practical, define the conditions under which your identity\-based policies allow access to a resource\. For example, you can write conditions to specify a range of allowable IP addresses that a request must come from\. You can also write conditions to allow requests only within a specified date or time range, or to require the use of SSL or MFA\. For more information, see [IAM JSON policy elements: Condition](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_condition.html) in the *IAM User Guide*\.
+Identity\-based policies determine whether someone can create, access, or delete Amazon EKS resources in your account\. These actions can incur costs for your AWS account\. When you create or edit identity\-based policies, follow these guidelines and recommendations:
++ **Get started with AWS managed policies and move toward least\-privilege permissions** – To get started granting permissions to your users and workloads, use the *AWS managed policies* that grant permissions for many common use cases\. They are available in your AWS account\. We recommend that you reduce permissions further by defining AWS customer managed policies that are specific to your use cases\. For more information, see [AWS managed policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html#aws-managed-policies) or [AWS managed policies for job functions](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_job-functions.html) in the *IAM User Guide*\.
++ **Apply least\-privilege permissions** – When you set permissions with IAM policies, grant only the permissions required to perform a task\. You do this by defining the actions that can be taken on specific resources under specific conditions, also known as *least\-privilege permissions*\. For more information about using IAM to apply permissions, see [ Policies and permissions in IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html) in the *IAM User Guide*\.
++ **Use conditions in IAM policies to further restrict access** – You can add a condition to your policies to limit access to actions and resources\. For example, you can write a policy condition to specify that all requests must be sent using SSL\. You can also use conditions to grant access to service actions if they are used through a specific AWS service, such as AWS CloudFormation\. For more information, see [ IAM JSON policy elements: Condition](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_condition.html) in the *IAM User Guide*\.
++ **Use IAM Access Analyzer to validate your IAM policies to ensure secure and functional permissions** – IAM Access Analyzer validates new and existing policies so that the policies adhere to the IAM policy language \(JSON\) and IAM best practices\. IAM Access Analyzer provides more than 100 policy checks and actionable recommendations to help you author secure and functional policies\. For more information, see [IAM Access Analyzer policy validation](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-policy-validation.html) in the *IAM User Guide*\.
++ **Require multi\-factor authentication \(MFA\)** – If you have a scenario that requires IAM users or a root user in your AWS account, turn on MFA for additional security\. To require MFA when API operations are called, add MFA conditions to your policies\. For more information, see [ Configuring MFA\-protected API access](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_configure-api-require.html) in the *IAM User Guide*\.
+
+For more information about best practices in IAM, see [Security best practices in IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html) in the *IAM User Guide*\.
 
 ## Using the Amazon EKS console<a name="security_iam_id-based-policy-examples-console"></a>
 
-To access the Amazon EKS console, you must have a minimum set of permissions\. These permissions must allow you to list and view details about the Amazon EKS resources in your AWS account\. If you create an identity\-based policy that is more restrictive than the minimum required permissions, the console won't function as intended for entities \(IAM users or roles\) with that policy\.
+To access the Amazon EKS console, an [IAM principal](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_terms-and-concepts.html), must have a minimum set of permissions\. These permissions allow the principal to list and view details about the Amazon EKS resources in your AWS account\. If you create an identity\-based policy that is more restrictive than the minimum required permissions, the console won't function as intended for principals with that policy attached to them\.
+
+To ensure that your IAM principals can still use the Amazon EKS console, create a policy with your own unique name, such as `AmazonEKSAdminPolicy`\. Attach the policy to the principals\. For more information, see [Adding and removing IAM identity permissions](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_manage-attach-detach.html) in the *IAM User Guide*\.
 
 **Important**  
-If you see an **Error loading Namespaces** error in the console, or don't see anything on the **Overview** or **Workloads** tabs, see [Can't see workloads or nodes and receive an error in the AWS Management Console](troubleshooting_iam.md#security-iam-troubleshoot-cannot-view-nodes-or-workloads) to resolve the issue\. If you don't resolve the issue, you can still view and manage aspects of your Amazon EKS cluster on the **Configuration** tab\.
-
-To ensure that those entities can still use the Amazon EKS console, create a policy with your own unique name, such as `AmazonEKSAdminPolicy`\. Attach the policy to the entities\. For more information, see [Adding permissions to a user](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_change-permissions.html#users_change_permissions-add-console) in the *IAM User Guide*\.
-
-**Important**  
-The following example policy will allow you to view information on the **Configuration** tab in the console\. To view information on the **Nodes** and **Workloads** in the AWS Management Console, you need additional IAM permissions, as well as Kubernetes permissions\. For more information, see the [View nodes and workloads for all clusters in the AWS Management Console](#policy_example3) example policy\.
+The following example policy allows a principal to view information on the **Configuration** tab in the console\. To view information on the **Overview** and **Resources** tabs in the AWS Management Console, the principal also needs Kubernetes permissions\. For more information, see [Required permissions](view-kubernetes-resources.md#view-kubernetes-resources-permissions)\.
 
 ```
 {
@@ -61,44 +62,9 @@ The following example policy will allow you to view information on the **Configu
 }
 ```
 
-You don't need to allow minimum console permissions for users that are making calls only to the AWS CLI or the AWS API\. Instead, allow access to only the actions that match the API operation that you're trying to perform\.
+You don't need to allow minimum console permissions for principals that are making calls only to the AWS CLI or the AWS API\. Instead, allow access to only the actions that match the API operation that you're trying to perform\. 
 
-## View nodes and workloads for all clusters in the AWS Management Console<a name="policy_example3"></a>
-
-This example shows how you can create a policy that allows a user to [View nodes](view-nodes.md) and [View workloads](view-workloads.md) for all clusters\.
-
-```
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "eks:DescribeNodegroup",
-                "eks:ListNodegroups",
-                "eks:DescribeCluster",
-                "eks:ListClusters",
-                "eks:AccessKubernetesApi",
-                "ssm:GetParameter",
-                "eks:ListUpdates",
-                "eks:ListFargateProfiles"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-```
-
-**Important**  
-The policy must be attached to a user or role that is mapped to a Kubernetes user or group in the `aws-auth` configmap\. The user or group must be a `subject` in a `rolebinding` or `clusterrolebinding` that is bound to a Kubernetes `role` or `clusterrole` that has the necessary permissions to view the Kubernetes resources\. For more information about adding IAM users or roles to the `aws-auth` configmap, see [Enabling IAM user and role access to your cluster](add-user-role.md)\. To create roles and role bindings, see [Using RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) in the Kubernetes documentation\. You can download the following example manifests that create a `clusterrole` and `clusterrolebinding` or a `role` and `rolebinding`:  
-**View Kubernetes resources in all namespaces** – The group name in the file is `eks-console-dashboard-full-access-group`, which is the group that your IAM user or role needs to be mapped to in the `aws-auth` configmap\. You can change the name of the group before applying it to your cluster, if desired, and then map your IAM user or role to that group in the configmap\. To download the file, select the appropriate link for the AWS Region that your cluster is in\.  
-[All AWS Regions other than Beijing and Ningxia China](https://amazon-eks.s3.us-west-2.amazonaws.com/docs/eks-console-full-access.yaml)
-[Beijing and Ningxia China AWS Regions](https://amazon-eks.s3.cn-north-1.amazonaws.com.cn/docs/eks-console-full-access.yaml)
-**View Kubernetes resources in a specific namespace** – The namespace in this file is `default`, so if you want to specify a different namespace, edit the file before applying it to your cluster\. The group name in the file is `eks-console-dashboard-restricted-access-group`, which is the group that your IAM user or role needs to be mapped to in the `aws-auth` configmap\. You can change the name of the group before applying it to your cluster, if desired, and then map your IAM user or role to that group in the configmap\. To download the file, select the appropriate link for the AWS Region that your cluster is in\.  
-[All AWS Regions other than Beijing and Ningxia China](https://amazon-eks.s3.us-west-2.amazonaws.com/docs/eks-console-restricted-access.yaml)
-[Beijing and Ningxia China AWS Regions](https://amazon-eks.s3.cn-north-1.amazonaws.com.cn/docs/eks-console-restricted-access.yaml)
-
-## Allow users to view their own permissions<a name="security_iam_id-based-policy-examples-view-own-permissions"></a>
+## Allow IAM users to view their own permissions<a name="security_iam_id-based-policy-examples-view-own-permissions"></a>
 
 This example shows how you might create a policy that allows IAM users to view the inline and managed policies that are attached to their user identity\. This policy includes permissions to complete this action on the console or programmatically using the AWS CLI or AWS API\.
 
@@ -137,9 +103,92 @@ This example shows how you might create a policy that allows IAM users to view t
 }
 ```
 
+## Create a Kubernetes cluster on the AWS Cloud<a name="policy-create-cluster"></a>
+
+This example policy includes the minimum permissions required to create an Amazon EKS cluster named *my\-cluster* in the *us\-west\-2* AWS Region\. You can replace the AWS Region with the AWS Region that you want to create a cluster in\. If you see a warning that says **The actions in your policy do not support resource\-level permissions and require you to choose `All resources`** in the AWS Management Console, it can be safely ignored\. If your account already has the *AWSServiceRoleForAmazonEKS* role, you can remove the `iam:CreateServiceLinkedRole` action from the policy\. If you've ever created an Amazon EKS cluster in your account then this role already exists, unless you deleted it\.
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "eks:CreateCluster",
+            "Resource": "arn:aws:eks:us-west-2:111122223333:cluster/my-cluster"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "iam:CreateServiceLinkedRole",
+            "Resource": "arn:aws:iam::111122223333:role/aws-service-role/eks.amazonaws.com/AWSServiceRoleForAmazonEKS",
+            "Condition": {
+                "ForAnyValue:StringEquals": {
+                    "iam:AWSServiceName": "eks"
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": "iam:PassRole",
+            "Resource": "arn:aws:iam::111122223333:role/cluster-role-name"
+        }
+    ]
+}
+```
+
+## Create a local Kubernetes cluster on an Outpost<a name="policy-create-local-cluster"></a>
+
+This example policy includes the minimum permissions required to create an Amazon EKS local cluster named *my\-cluster* on an Outpost in the *us\-west\-2* AWS Region\. You can replace the AWS Region with the AWS Region that you want to create a cluster in\. If you see a warning that says **The actions in your policy do not support resource\-level permissions and require you to choose `All resources`** in the AWS Management Console, it can be safely ignored\. If your account already has the `AWSServiceRoleForAmazonEKSLocalOutpost` role, you can remove the `iam:CreateServiceLinkedRole` action from the policy\. If you've ever created an Amazon EKS local cluster on an Outpost in your account then this role already exists, unless you deleted it\.
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "eks:CreateCluster",
+            "Resource": "arn:aws:eks:us-west-2:111122223333:cluster/my-cluster"
+        },
+        {
+            "Action": [
+                "ec2:DescribeSubnets",
+                "ec2:DescribeVpcs",
+                "iam:GetRole"
+            ],
+            "Resource": "*",
+            "Effect": "Allow"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "iam:CreateServiceLinkedRole",
+            "Resource": "arn:aws:iam::111122223333:role/aws-service-role/outposts.eks-local.amazonaws.com/AWSServiceRoleForAmazonEKSLocalOutpost"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:PassRole",
+                "iam:ListAttachedRolePolicies"
+            ]
+            "Resource": "arn:aws:iam::111122223333:role/cluster-role-name"
+        },
+        {
+            "Action": [
+                "iam:CreateInstanceProfile",
+                "iam:TagInstanceProfile",
+                "iam:AddRoleToInstanceProfile",
+                "iam:GetInstanceProfile",
+                "iam:DeleteInstanceProfile",
+                "iam:RemoveRoleFromInstanceProfile"
+            ],
+            "Resource": "arn:aws:iam::*:instance-profile/eks-local-*",
+            "Effect": "Allow"
+        },
+    ]
+}
+```
+
 ## Update a Kubernetes cluster<a name="policy_example1"></a>
 
-This example shows how you can create a policy that allows a user to update the Kubernetes version of any *dev* cluster for an account, in any region\.
+This example policy includes the minimum permission required to update a cluster named *my\-cluster* in the us\-west\-2 AWS Region\.
 
 ```
 {
@@ -148,7 +197,7 @@ This example shows how you can create a policy that allows a user to update the 
         {
             "Effect": "Allow",
             "Action": "eks:UpdateClusterVersion",
-            "Resource": "arn:aws:eks:*:<111122223333>:cluster/<dev>"
+            "Resource": "arn:aws:eks:us-west-2:111122223333:cluster/my-cluster"
         }
     ]
 }
@@ -156,7 +205,7 @@ This example shows how you can create a policy that allows a user to update the 
 
 ## List or describe all clusters<a name="policy_example2"></a>
 
-This example shows how you can create a policy that allows a user read\-only access to list or describe all clusters\. An account must be able to list and describe clusters to use the `update-kubeconfig` AWS CLI command\.
+This example policy includes the minimum permissions required to list and describe all clusters in your account\. An [IAM principal](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_terms-and-concepts.html) must be able to list and describe clusters to use the `update-kubeconfig` AWS CLI command\.
 
 ```
 {

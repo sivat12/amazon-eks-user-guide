@@ -1,6 +1,6 @@
 # Control plane metrics with Prometheus<a name="prometheus"></a>
 
-The Kubernetes API server exposes a number of metrics that are useful for monitoring and analysis\. These metrics are exposed internally through a metrics endpoint that refers to the `/metrics` HTTP API\. Like other endpoints, this endpoint is exposed on the Amazon EKS control plane\. This topic explains some of the ways you can use this endpoint to view and analyze what your cluster is doing\.
+The Kubernetes API server exposes a number of metrics that are useful for monitoring and analysis\. These metrics are exposed internally through a metrics endpoint that refers to the `/metrics` HTTP API\. Like other endpoints, this endpoint is exposed on the Amazon EKS control plane\. This topic explains how to deploy Prometheus and some of the ways that you can use it to view and analyze what your cluster is doing\.
 
 ## Viewing the raw metrics<a name="view-raw-metrics"></a>
 
@@ -10,10 +10,10 @@ To view the raw metrics output, use `kubectl` with the `--raw` flag\. This comma
 kubectl get --raw /metrics
 ```
 
-Example output:
+An example output is as follows\.
 
 ```
-...
+[...]
 # HELP rest_client_requests_total Number of HTTP requests, partitioned by status code, method, and host.
 # TYPE rest_client_requests_total counter
 rest_client_requests_total{code="200",host="127.0.0.1:21362",method="POST"} 4994
@@ -34,10 +34,10 @@ ssh_tunnel_open_fail_count 0
 This raw output returns verbatim what the API server exposes\. These metrics are represented in a [Prometheus format](https://github.com/prometheus/docs/blob/master/content/docs/instrumenting/exposition_formats.md)\. This format allows the API server to expose different metrics broken down by line\. Each line includes a metric name, tags, and a value\.
 
 ```
-<metric_name>{"<tag>"="<value>"[<,...>]} <value>
+metric_name{"tag"="value"[,...]} value
 ```
 
-While this endpoint is useful if you are looking for a specific metric, you typically want to analyze these metrics over time\. To do this, you can deploy [Prometheus](https://prometheus.io/) into your cluster\. Prometheus is a monitoring and time series database that scrapes exposed endpoints and aggregates data, allowing you to filter, graph, and query the results\.
+While this endpoint is useful if you are looking for a specific metric, you typically want to analyze these metrics over time\. To do this, you can deploy [https://prometheus.io/](https://prometheus.io/) into your cluster\. Prometheus is a monitoring and time series database that scrapes exposed endpoints and aggregates data, allowing you to filter, graph, and query the results\.
 
 ## Deploying Prometheus<a name="deploy-prometheus"></a>
 
@@ -67,16 +67,16 @@ After you configure Helm for your Amazon EKS cluster, you can use it to deploy P
        --set alertmanager.persistentVolume.storageClass="gp2",server.persistentVolume.storageClass="gp2"
    ```
 **Note**  
-If you get the error `Error: failed to download "stable/prometheus" (hint: running `helm repo update` may help)` when executing this command, run `helm repo update`, and then try running the Step 2 command again\.  
+If you get the error `Error: failed to download "stable/prometheus" (hint: running `helm repo update` may help)` when executing this command, run `helm repo update prometheus-community`, and then try running the Step 2 command again\.  
 If you get the error `Error: rendered manifests contain a resource that already exists`, run `helm uninstall your-release-name -n namespace`, then try running the Step 3 command again\.
 
-1. Verify that all of the pods in the `prometheus` namespace are in the `READY` state\.
+1. Verify that all of the Pods in the `prometheus` namespace are in the `READY` state\.
 
    ```
    kubectl get pods -n prometheus
    ```
 
-   Output:
+   An example output is as follows\.
 
    ```
    NAME                                             READY   STATUS    RESTARTS   AGE
@@ -95,7 +95,7 @@ If you get the error `Error: rendered manifests contain a resource that already 
    kubectl --namespace=prometheus port-forward deploy/prometheus-server 9090
    ```
 
-1. Point a web browser to [localhost:9090](localhost:9090) to view the Prometheus console\.
+1. Point a web browser to `http://localhost:9090` to view the Prometheus console\.
 
 1. Choose a metric from the **\- insert metric at cursor** menu, then choose **Execute**\. Choose the **Graph** tab to show the metric over time\. The following image shows `container_memory_usage_bytes` over time\.  
 ![\[Prometheus metrics\]](http://docs.aws.amazon.com/eks/latest/userguide/images/prometheus-metric.png)

@@ -3,54 +3,54 @@
 This topic describes how to create an Amazon EKS cluster with nodes running [Amazon EC2 Inf1](http://aws.amazon.com/ec2/instance-types/inf1/) instances and \(optionally\) deploy a sample application\. Amazon EC2 Inf1 instances are powered by [AWS Inferentia](http://aws.amazon.com/machine-learning/inferentia/) chips, which are custom built by AWS to provide high performance and lowest cost inference in the cloud\. Machine learning models are deployed to containers using [AWS Neuron](http://aws.amazon.com/machine-learning/neuron/), a specialized software development kit \(SDK\) consisting of a compiler, runtime, and profiling tools that optimize the machine learning inference performance of Inferentia chips\. AWS Neuron supports popular machine learning frameworks such as TensorFlow, PyTorch, and MXNet\.
 
 **Note**  
-Neuron device logical IDs must be contiguous\. If a pod requesting multiple Neuron devices is scheduled on an `inf1.6xlarge` or `inf1.24xlarge` instance type \(which have more than one Neuron device\), that pod will fail to start if the Kubernetes scheduler selects non\-contiguous device IDs\. For more information, see [Device logical IDs must be contiguous](https://github.com/aws/aws-neuron-sdk/issues/110) on GitHub\.
+Neuron device logical IDs must be contiguous\. If a Pod requesting multiple Neuron devices is scheduled on an `inf1.6xlarge` or `inf1.24xlarge` instance type \(which have more than one Neuron device\), that Pod will fail to start if the Kubernetes scheduler selects non\-contiguous device IDs\. For more information, see [Device logical IDs must be contiguous](https://github.com/aws/aws-neuron-sdk/issues/110) on GitHub\.
 
 ## Prerequisites<a name="inferentia-prerequisites"></a>
-+ Have `eksctl` installed on your computer\. If you don't have it installed, see [The `eksctl` command line utility](eksctl.md) for installation instructions\.
-+ Have `kubectl` installed on your computer\. For more information, see [Installing `kubectl`](install-kubectl.md)\.
++ Have `eksctl` installed on your computer\. If you don't have it installed, see [Installing or updating `eksctl`](eksctl.md) for installation instructions\.
++ Have `kubectl` installed on your computer\. For more information, see [Installing or updating `kubectl`](install-kubectl.md)\.
 + \(Optional\) Have `python3` installed on your computer\. If you don't have it installed, then see [Python downloads](https://www.python.org/downloads/) for installation instructions\.
 
 ## Create a cluster<a name="create-cluster-inferentia"></a>
 
 **To create a cluster with Inf1 Amazon EC2 instance nodes**
 
-1. Create a cluster with Inf1 Amazon EC2 instance nodes\. You can replace *<inf1\.2xlarge>* with any [Inf1 instance type](http://aws.amazon.com/ec2/instance-types/inf1/)\. `Eksctl` detects that you are launching a node group with an `Inf1` instance type and will start your nodes using one of the [Amazon EKS optimized accelerated Amazon Linux AMI](eks-linux-ami-versions.md#eks-gpu-ami-versions)\.
+1. Create a cluster with Inf1 Amazon EC2 instance nodes\. You can replace `inf1.2xlarge` with any [Inf1 instance type](http://aws.amazon.com/ec2/instance-types/inf1/)\. The `eksctl` utility detects that you are launching a node group with an `Inf1` instance type and will start your nodes using one of the Amazon EKS optimized accelerated Amazon Linux AMIs\. 
 **Note**  
 You can't use [IAM roles for service accounts](iam-roles-for-service-accounts.md) with TensorFlow Serving\.
 
    ```
    eksctl create cluster \
-       --name <inferentia> \
-       --region <region-code> \
-       --nodegroup-name <ng-inf1> \
-       --node-type <inf1.2xlarge> \
-       --nodes <2> \
-       --nodes-min <1> \
-       --nodes-max <4> \
+       --name inferentia \
+       --region region-code \
+       --nodegroup-name ng-inf1 \
+       --node-type inf1.2xlarge \
+       --nodes 2 \
+       --nodes-min 1 \
+       --nodes-max 4 \
        --ssh-access \
-       --ssh-public-key <your-key> \
+       --ssh-public-key your-key \
        --with-oidc
    ```
 **Note**  
 Note the value of the following line of the output\. It's used in a later \(optional\) step\.  
 
    ```
-   [9]  adding identity "arn:aws:iam::<111122223333>:role/eksctl-<inferentia>-<nodegroup-ng-in>-NodeInstanceRole-<FI7HIYS3BS09>" to auth ConfigMap
+   [9]  adding identity "arn:aws:iam::111122223333:role/eksctl-inferentia-nodegroup-ng-in-NodeInstanceRole-FI7HIYS3BS09" to auth ConfigMap
    ```
 
    When launching a node group with `Inf1` instances, `eksctl` automatically installs the AWS Neuron Kubernetes device plugin\. This plugin advertises Neuron devices as a system resource to the Kubernetes scheduler, which can be requested by a container\. In addition to the default Amazon EKS node IAM policies, the Amazon S3 read only access policy is added so that the sample application, covered in a later step, can load a trained model from Amazon S3\.
 
-1. Make sure that all pods have started correctly\.
+1. Make sure that all Pods have started correctly\.
 
    ```
    kubectl get pods -n kube-system
    ```
 
-   Abbreviated output
+   Abbreviated output:
 
    ```
    NAME                                   READY   STATUS    RESTARTS   AGE
-   ...
+   [...]
    neuron-device-plugin-daemonset-6djhp   1/1     Running   0          5m
    neuron-device-plugin-daemonset-hwjsj   1/1     Running   0          5m
    ```
@@ -68,10 +68,10 @@ The number of Neuron devices allocated to your serving application can be adjust
    ```
    aws iam attach-role-policy \
        --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess \
-       --role-name eksctl-<inferentia>-<nodegroup-ng-in>-NodeInstanceRole-<FI7HIYS3BS09>
+       --role-name eksctl-inferentia-nodegroup-ng-in-NodeInstanceRole-FI7HIYS3BS09
    ```
 
-1. Create a file named `rn50_deployment.yaml` with the contents below\. Update the region\-code and model path to match your desired settings\. The model name is for identification purposes when a client makes a request to the TensorFlow server\. This example uses a model name to match a sample ResNet50 client script that will be used in a later step for sending prediction requests\. 
+1. Create a file named `rn50_deployment.yaml` with the following contents\. Update the region\-code and model path to match your desired settings\. The model name is for identification purposes when a client makes a request to the TensorFlow server\. This example uses a model name to match a sample ResNet50 client script that will be used in a later step for sending prediction requests\. 
 
    ```
    aws ecr list-images --repository-name neuron-rtd --registry-id 790709498068 --region us-west-2
@@ -106,7 +106,7 @@ The number of Neuron devices allocated to your serving application can be adjust
                - --port=8500
                - --rest_api_port=9000
                - --model_name=resnet50_neuron
-               - --model_base_path=s3://<your-bucket-of-models>/resnet50_neuron/
+               - --model_base_path=s3://your-bucket-of-models/resnet50_neuron/
              ports:
                - containerPort: 8500
                - containerPort: 9000
@@ -148,9 +148,9 @@ The number of Neuron devices allocated to your serving application can be adjust
    kind: Service
    apiVersion: v1
    metadata:
-     name: <eks-neuron-test>
+     name: eks-neuron-test
      labels:
-       app: <eks-neuron-test>
+       app: eks-neuron-test
    spec:
      type: ClusterIP
      ports:
@@ -161,7 +161,7 @@ The number of Neuron devices allocated to your serving application can be adjust
          port: 9000
          targetPort: 9000
      selector:
-       app: <eks-neuron-test>
+       app: eks-neuron-test
        role: master
    ```
 
@@ -214,7 +214,7 @@ The number of Neuron devices allocated to your serving application can be adjust
    python3 tensorflow-model-server-infer.py
    ```
 
-   Output
+   An example output is as follows\.
 
    ```
    [[(u'n02123045', u'tabby', 0.68817204), (u'n02127052', u'lynx', 0.12701613), (u'n02123159', u'tiger_cat', 0.08736559), (u'n02124075', u'Egyptian_cat', 0.063844085), (u'n02128757', u'snow_leopard', 0.009240591)]]

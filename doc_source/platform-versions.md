@@ -1,82 +1,98 @@
 # Amazon EKS platform versions<a name="platform-versions"></a>
 
-Amazon EKS platform versions represent the capabilities of the Amazon EKS cluster control plane, such as which Kubernetes API server flags are enabled, as well as the current Kubernetes patch version\. Each Kubernetes minor version has one or more associated Amazon EKS platform versions\. The platform versions for different Kubernetes minor versions are independent\.
+Amazon EKS platform versions represent the capabilities of the Amazon EKS cluster control plane, such as which Kubernetes API server flags are enabled, as well as the current Kubernetes patch version\. Each Kubernetes minor version has one or more associated Amazon EKS platform versions\. The platform versions for different Kubernetes minor versions are independent\. If you have a local cluster on AWS Outposts, see [Amazon EKS local cluster platform versions](eks-outposts-platform-versions.md) instead of this topic\.
 
-When a new Kubernetes minor version is available in Amazon EKS, such as 1\.21, the initial Amazon EKS platform version for that Kubernetes minor version starts at `eks.1`\. However, Amazon EKS releases new platform versions periodically to enable new Kubernetes control plane settings and to provide security fixes\.
+When a new Kubernetes minor version is available in Amazon EKS, such as 1\.27, the initial Amazon EKS platform version for that Kubernetes minor version starts at `eks.1`\. However, Amazon EKS releases new platform versions periodically to enable new Kubernetes control plane settings and to provide security fixes\.
 
 When new Amazon EKS platform versions become available for a minor version:
-+ The Amazon EKS platform version number is incremented \(`eks.<n+1>`\)\.
-+ Amazon EKS automatically upgrades all existing clusters to the latest Amazon EKS platform version for their corresponding Kubernetes minor version\.
++ The Amazon EKS platform version number is incremented \(`eks.n+1`\)\.
++ Amazon EKS automatically upgrades all existing clusters to the latest Amazon EKS platform version for their corresponding Kubernetes minor version\. Automatic upgrades of existing Amazon EKS platform versions are rolled out incrementally\. The roll\-out process might take some time\. If you need the latest Amazon EKS platform version features immediately, you should create a new Amazon EKS cluster\.
+
+  If your cluster is more than two platform versions behind the current platform version, then it's possible that Amazon EKS wasn't able to automatically update your cluster\. For details of what may cause this, see [Amazon EKS platform version is more than two versions behind the current platform version](troubleshooting.md#troubleshooting-platform-version)\.
 + Amazon EKS might publish a new node AMI with a corresponding patch version\. However, all patch versions are compatible between the EKS control plane and node AMIs for a given Kubernetes minor version\.
 
- New Amazon EKS platform versions don't introduce breaking changes or cause service interruptions\. 
+ New Amazon EKS platform versions don't introduce breaking changes or cause service interruptions\.
 
-**Note**  
-Automatic upgrades of existing Amazon EKS platform versions are rolled out incrementally\. The roll\-out process might take some time\. If you need the latest Amazon EKS platform version features immediately, you should create a new Amazon EKS cluster\.
-
-Clusters are always created with the latest available Amazon EKS platform version \(`eks.<n>`\) for the specified Kubernetes version\. If you update your cluster to a new Kubernetes minor version, your cluster receives the current Amazon EKS platform version for the Kubernetes minor version that you updated to\.
+Clusters are always created with the latest available Amazon EKS platform version \(`eks.n`\) for the specified Kubernetes version\. If you update your cluster to a new Kubernetes minor version, your cluster receives the current Amazon EKS platform version for the Kubernetes minor version that you updated to\.
 
 The current and recent Amazon EKS platform versions are described in the following tables\.
 
-## Kubernetes version 1\.21<a name="platform-versions-1.21"></a>
+## Kubernetes version `1.27`<a name="platform-versions-1.27"></a>
+
+The following admission controllers are enabled for all `1.27` platform versions: `NodeRestriction`, `ExtendedResourceToleration`, `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `TaintNodesByCondition`, `PodSecurity`, `Priority`, `DefaultTolerationSeconds`, `DefaultStorageClass`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `RuntimeClass`, `CertificateApproval`, `CertificateSigning`, `CertificateSubjectRestriction`, `DefaultIngressClass`, `MutatingAdmissionWebhook`, `ValidatingAdmissionPolicy`, `ValidatingAdmissionWebhook`, `ResourceQuota`\.
 
 
-| Kubernetes version | Amazon EKS platform version | Enabled admission controllers | Release notes | 
+|  Kubernetes version  |  Amazon EKS platform version  |  Release notes  |  Release date  | 
 | --- | --- | --- | --- | 
-|  `1.21.5`  |  `eks.4`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `ExtendedResourceToleration`, `CertificateApproval`, `PodPriority`, `CertificateSigning`, `CertificateSubjectRestriction`, `RuntimeClass`, `DefaultIngressClass`  | Version 1\.10\.1\-eksbuild\.1 of the Amazon VPC CNI self\-managed and Amazon EKS add\-on is now the default version deployed\. | 
-|  `1.21.2`  |  `eks.3`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `ExtendedResourceToleration`, `CertificateApproval`, `PodPriority`, `CertificateSigning`, `CertificateSubjectRestriction`, `RuntimeClass`, `DefaultIngressClass`  | New platform version with support for Windows IPv4 address management on the VPC Resource Controller running on the Kubernetes control plane\. Added the Kubernetes filter directive for Fargate Fluent Bit logging\. | 
-|  `1.21.2`  |  `eks.2`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `ExtendedResourceToleration`  |  New platform version with security fixes and enhancements\.  | 
-|  `1.21.2`  |  `eks.1`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `ExtendedResourceToleration`  |  Initial release of Kubernetes 1\.21 for Amazon EKS\. For more information, see [Kubernetes 1\.21](kubernetes-versions.md#kubernetes-1.21)\.  | 
+|  `1.27.4`  |  `eks.5`  |  New platform version with security fixes and enhancements\.  | August 30, 2023 | 
+|  `1.27.4`  |  `eks.4`  |  New platform version with security fixes and enhancements\.  | July 30, 2023 | 
+|  `1.27.3`  |  `eks.3`  |  New platform version with security fixes and enhancements\.  | June 30, 2023 | 
+|  `1.27.2`  |  `eks.2`  |  New platform version with security fixes and enhancements\.  | June 9, 2023 | 
+|  `1.27.1`  |  `eks.1`  |  Initial release of Kubernetes version `1.27` for Amazon EKS\. For more information, see [Kubernetes 1\.27](kubernetes-versions.md#kubernetes-1.27)\.  | May 24, 2023 | 
 
-## Kubernetes version 1\.20<a name="platform-versions-1.20"></a>
+## Kubernetes version `1.26`<a name="platform-versions-1.26"></a>
+
+The following admission controllers are enabled for all `1.26` platform versions: `NodeRestriction`, `ExtendedResourceToleration`, `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `TaintNodesByCondition`, `PodSecurity`, `Priority`, `DefaultTolerationSeconds`, `DefaultStorageClass`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `RuntimeClass`, `CertificateApproval`, `CertificateSigning`, `CertificateSubjectRestriction`, `DefaultIngressClass`, `MutatingAdmissionWebhook`, `ValidatingAdmissionPolicy`, `ValidatingAdmissionWebhook`, `ResourceQuota`\.
 
 
-| Kubernetes version | Amazon EKS platform version | Enabled admission controllers | Release notes | 
+|  Kubernetes version  |  Amazon EKS platform version  |  Release notes  |  Release date  | 
 | --- | --- | --- | --- | 
-|  `1.20.11`  |  `eks.3`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `ExtendedResourceToleration`, `CertificateApproval`, `PodPriority`, `CertificateSigning`, `CertificateSubjectRestriction`, `RuntimeClass`, `DefaultIngressClass`  |  New platform version with support for Windows IPv4 address management on the VPC Resource Controller running on the Kubernetes control plane\. Added the Kubernetes filter directive for Fargate Fluent Bit logging\.  | 
-|  `1.20.7`  |  `eks.2`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `ExtendedResourceToleration`  |  New platform version with security fixes and enhancements\.  | 
-|  `1.20.4`  |  `eks.1`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `ExtendedResourceToleration`  |  Initial release of Kubernetes 1\.20 for Amazon EKS\. For more information, see [Kubernetes 1\.20](kubernetes-versions.md#kubernetes-1.20)\.  | 
+|  `1.26.7`  |  `eks.6`  |  New platform version with security fixes and enhancements\.  | August 30, 2023 | 
+|  `1.26.7`  |  `eks.5`  |  New platform version with security fixes and enhancements\.  | July 30, 2023 | 
+|  `1.26.6`  |  `eks.4`  |  New platform version with security fixes and enhancements\.  | June 30, 2023 | 
+|  `1.26.5`  |  `eks.3`  |  New platform version with security fixes and enhancements\.  | June 9, 2023 | 
+|  `1.26.4`  |  `eks.2`  |  New platform version with security fixes and enhancements\.  | May 5, 2023 | 
+|  `1.26.2`  |  `eks.1`  |  Initial release of Kubernetes version `1.26` for Amazon EKS\. For more information, see [Kubernetes 1\.26](kubernetes-versions.md#kubernetes-1.26)\.  | April 11, 2023 | 
 
-## Kubernetes version 1\.19<a name="platform-versions-1.19"></a>
+## Kubernetes version `1.25`<a name="platform-versions-1.25"></a>
+
+The following admission controllers are enabled for all `1.25` platform versions: `NodeRestriction`, `ExtendedResourceToleration`, `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `TaintNodesByCondition`, `PodSecurity`, `Priority`, `DefaultTolerationSeconds`, `DefaultStorageClass`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `RuntimeClass`, `CertificateApproval`, `CertificateSigning`, `CertificateSubjectRestriction`, `DefaultIngressClass`, `MutatingAdmissionWebhook`, `ValidatingAdmissionPolicy`, `ValidatingAdmissionWebhook`, `ResourceQuota`\.
 
 
-| Kubernetes version | Amazon EKS platform version | Enabled admission controllers | Release notes | 
+|  Kubernetes version  |  Amazon EKS platform version  |  Release notes  |  Release date  | 
 | --- | --- | --- | --- | 
-|  `1.19.15`  |  `eks.7`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `ExtendedResourceToleration`, `CertificateApproval`, `PodPriority`, `CertificateSigning`, `CertificateSubjectRestriction`, `RuntimeClass`, `DefaultIngressClass`  | New platform version with support for Windows IPv4 address management on the VPC Resource Controller running on the Kubernetes control plane\. Added the Kubernetes filter directive for Fargate Fluent Bit logging\. | 
-|  `1.19.8`  |  `eks.6`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `ExtendedResourceToleration`  |  New platform version with security fixes and enhancements\.  | 
-|  `1.19.8`  |  `eks.5`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `ExtendedResourceToleration`  |  New platform version that supports custom security groups with Fargate\.  | 
-|  `1.19.8`  |  `eks.4`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `ExtendedResourceToleration`  |  New platform version with security fixes and enhancements\.  | 
-|  `1.19.8`  |  `eks.3`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `ExtendedResourceToleration`  |  New platform version with security fixes and enhancements\.  | 
-|  `1.19.6`  |  `eks.2`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `ExtendedResourceToleration`  |  New platform version with security fixes and enhancements\.  | 
-|  `1.19.6`  |  `eks.1`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `ExtendedResourceToleration`  |  Initial release of Kubernetes 1\.19 for Amazon EKS\. For more information, see [Kubernetes 1\.19](kubernetes-versions.md#kubernetes-1.19)\.  | 
+|  `1.25.12`  |  `eks.7`  |  New platform version with security fixes and enhancements\.  | August 30, 2023 | 
+|  `1.25.12`  |  `eks.6`  |  New platform version with security fixes and enhancements\.  | July 30, 2023 | 
+|  `1.25.11`  |  `eks.5`  | New platform version with security fixes and enhancements\. | June 30, 2023 | 
+|  `1.25.10`  |  `eks.4`  | New platform version with security fixes and enhancements\. | June 9, 2023 | 
+|  `1.25.9`  |  `eks.3`  | New platform version with security fixes and enhancements\. | May 5, 2023 | 
+|  `1.25.8`  |  `eks.2`  |  New platform version with security fixes and enhancements\.  | March 24, 2023 | 
+|  `1.25.6`  |  `eks.1`  |  Initial release of Kubernetes version `1.25` for Amazon EKS\. For more information, see [Kubernetes 1\.25](kubernetes-versions.md#kubernetes-1.25)\.  | February 21, 2023 | 
 
-## Kubernetes version 1\.18<a name="platform-versions-1.18"></a>
+## Kubernetes version `1.24`<a name="platform-versions-1.24"></a>
+
+The following admission controllers are enabled for all `1.24` platform versions: `CertificateApproval`, `CertificateSigning`, `CertificateSubjectRestriction`, `DefaultIngressClass`, `DefaultStorageClass`, `DefaultTolerationSeconds`, `ExtendedResourceToleration`, `LimitRanger`, `MutatingAdmissionWebhook`, `NamespaceLifecycle`, `NodeRestriction`, `PersistentVolumeClaimResize`, `Priority`, `PodSecurityPolicy`, `ResourceQuota`, `RuntimeClass`, `ServiceAccount`, `StorageObjectInUseProtection`, `TaintNodesByCondition`, and `ValidatingAdmissionWebhook`\.
 
 
-| Kubernetes version | Amazon EKS platform version | Enabled admission controllers | Release notes | 
+|  Kubernetes version  |  Amazon EKS platform version  |  Release notes  |  Release date  | 
 | --- | --- | --- | --- | 
-|  `1.18.20`  |  `eks.9`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `CertificateApproval`, `PodPriority`, `CertificateSigning`, `CertificateSubjectRestriction`, `RuntimeClass`, `DefaultIngressClass`  | New platform version with support for Windows IPv4 address management on the VPC Resource Controller running on the Kubernetes control plane\. Added the Kubernetes filter directive for Fargate Fluent Bit logging\. | 
-|  `1.18.20`  |  `eks.8`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`  | New platform version with security fixes and enhancements\. | 
-|  `1.18.16`  |  `eks.7`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`  | New platform version that supports custom security groups with Fargate\. | 
-|  `1.18.16`  |  `eks.6`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`  | New platform version with security fixes and enhancements\. | 
-|  `1.18.16`  |  `eks.5`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`  | New platform version with security fixes and enhancements\. | 
-|  `1.18.9`  |  `eks.4`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`  | New platform version with security fixes and enhancements\. | 
-|  `1.18.9`  |  `eks.3`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`  |  Includes support for [Amazon EKS add\-ons](eks-add-ons.md) and [Fargate logging](fargate-logging.md)\.  | 
-|  `1.18.9`  |  `eks.2`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`  |  New platform version with security fixes and enhancements\.  | 
-|  `1.18.8`  |  `eks.1`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`  |  Initial release of Kubernetes 1\.18 for Amazon EKS\. For more information, see [Kubernetes 1\.18](kubernetes-versions.md#kubernetes-1.18)\.  | 
+|  `1.24.16`  |  `eks.10`  |  New platform version with security fixes and enhancements\.  | August 30, 2023 | 
+|  `1.24.16`  |  `eks.9`  |  New platform version with security fixes and enhancements\.  | July 30, 2023 | 
+|  `1.24.15`  |  `eks.8`  |  New platform version with security fixes and enhancements\.   | June 30, 2023 | 
+|  `1.24.14`  |  `eks.7`  |  New platform version with security fixes and enhancements\.   | June 9, 2023 | 
+|  `1.24.13`  |  `eks.6`  |  New platform version with security fixes and enhancements\.   | May 5, 2023 | 
+|  `1.24.12`  |  `eks.5`  |  New platform version with security fixes and enhancements\.   | March 24, 2023 | 
+|  `1.24.8`  |  `eks.4`  |  New platform version with security fixes and enhancements\.   | January 27, 2023 | 
+|  `1.24.7`  |  `eks.3`  |  New platform version with security fixes and enhancements\.   | December 5, 2022 | 
+|  `1.24.7`  |  `eks.2`  |  New platform version with security fixes and enhancements\.   | November 18, 2022 | 
+|  `1.24.7`  |  `eks.1`  |  Initial release of Kubernetes version `1.24` for Amazon EKS\. For more information, see [Kubernetes 1\.24](kubernetes-versions.md#kubernetes-1.24)\.  | November 15, 2022 | 
 
-## Kubernetes version 1\.17<a name="platform-versions-1.17"></a>
+## Kubernetes version `1.23`<a name="platform-versions-1.23"></a>
+
+The following admission controllers are enabled for all `1.23` platform versions: `CertificateApproval`, `CertificateSigning`, `CertificateSubjectRestriction`, `DefaultIngressClass`, `DefaultStorageClass`, `DefaultTolerationSeconds`, `ExtendedResourceToleration`, `LimitRanger`, `MutatingAdmissionWebhook`, `NamespaceLifecycle`, `NodeRestriction`, `PersistentVolumeClaimResize`, `Priority`, `PodSecurityPolicy`, `ResourceQuota`, `RuntimeClass`, `ServiceAccount`, `StorageObjectInUseProtection`, `TaintNodesByCondition`, and `ValidatingAdmissionWebhook`\.
 
 
-| Kubernetes version | Amazon EKS platform version | Enabled admission controllers | Release notes | 
+|  Kubernetes version  |  Amazon EKS platform version  |  Release notes  |  Release date  | 
 | --- | --- | --- | --- | 
-|  `1.17.17`  |  `eks.10`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`, `PodPriority`, `RuntimeClass`  | New platform version with support for Windows IPv4 address management on the VPC Resource Controller running on the Kubernetes control plane\. Added the Kubernetes filter directive for Fargate Fluent Bit logging\. | 
-|  `1.17.17`  |  `eks.9`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`  | New platform version with security fixes and enhancements\. | 
-|  `1.17.17`  |  `eks.8`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`  | New platform version with security fixes and enhancements\. | 
-|  `1.17.17`  |  `eks.7`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`  | New platform version with security fixes and enhancements\. | 
-|  `1.17.12`  |  `eks.6`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`  | New platform version with security fixes and enhancements\. | 
-|  `1.17.12`  |  `eks.5`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`  |  Includes support for [Fargate logging](fargate-logging.md)\.  | 
-|  `1.17.12`  |  `eks.4`  |  `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize`  |  New platform version with security fixes and enhancements\.  | 
-| `1.17.9` | `eks.3` | `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize` | New platform version with support for [Security groups for pods](security-groups-for-pods.md)\. This release creates a `vpc-resource-controller` service account that is required for the VPC resource controller\. | 
-| `1.17.9` | `eks.2` | `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize` | New platform version with security fixes and enhancements, including UDP support for services of type LoadBalancer when using NLB and support for using Amazon EFS volumes with Fargate pods\. For more information, see the [Allow UDP for AWS NLB](https://github.com/kubernetes/kubernetes/pull/92109) issue on GitHub\. | 
-| `1.17.6` | `eks.1` | `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `DefaultStorageClass`, `ResourceQuota`, `DefaultTolerationSeconds`, `NodeRestriction`, `MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`, `PodSecurityPolicy`, `TaintNodesByCondition`, `Priority`, `StorageObjectInUseProtection`, `PersistentVolumeClaimResize` | Initial release of Kubernetes 1\.17 for Amazon EKS\. For more information, see [Kubernetes 1\.17](kubernetes-versions.md#kubernetes-1.17)\. | 
+|  `1.23.17`  |  `eks.12`  |  New platform version with security fixes and enhancements\.  | August 30, 2023 | 
+|  `1.23.17`  |  `eks.11`  |  New platform version with security fixes and enhancements\.  | July 30, 2023 | 
+|  `1.23.17`  |  `eks.10`  |  New platform version with security fixes and enhancements\.  | June 30, 2023 | 
+|  `1.23.17`  |  `eks.9`  |  New platform version with security fixes and enhancements\.  | June 9, 2023 | 
+|  `1.23.17`  |  `eks.8`  |  New platform version with security fixes and enhancements\.  | May 5, 2023 | 
+|  `1.23.17`  |  `eks.7`  |  New platform version with security fixes and enhancements\.  | March 24, 2023 | 
+|  `1.23.14`  |  `eks.6`  |  New platform version with security fixes and enhancements\.  | January 27, 2023 | 
+|  `1.23.13`  |  `eks.5`  |  New platform version with security fixes and enhancements\.   | December 5, 2022 | 
+|  `1.23.13`  |  `eks.4`  |  New platform version with security fixes and enhancements\.   | November 18, 2022 | 
+|  `1.23.12`  |  `eks.3`  |  New platform version with security fixes and enhancements\.   | November 7, 2022 | 
+|  `1.23.10`  |  `eks.2`  |  New platform version with security fixes and enhancements\.   | September 21, 2022 | 
+|  `1.23.7`  |  `eks.1`  |  Initial release of Kubernetes version `1.23` for Amazon EKS\. For more information, see [Kubernetes 1\.23](kubernetes-versions.md#kubernetes-1.23)\.  | August 11, 2022 | 
